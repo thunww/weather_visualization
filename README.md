@@ -1,6 +1,6 @@
 "# weather_visualization" 
 
-# author: Tran Gia Than / thunwww
+# author: Tran Gia Than / thunww
 
 # Chạy CLI: python main.py
 
