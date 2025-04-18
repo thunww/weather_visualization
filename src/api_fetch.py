@@ -7,7 +7,7 @@ import os
 load_dotenv()
 
 def fetch_weather_data(city, api_key):
-    """Gọi API OpenWeatherMap để lấy dữ liệu dự báo thời tiết cho nhiều ngày."""
+    """Gọi API OpenWeatherMap để lấy dữ liệu thời tiết."""
     url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}&units=metric"
     try:
         response = requests.get(url)
@@ -18,7 +18,7 @@ def fetch_weather_data(city, api_key):
         return None
 
 def process_weather_data(city):
-    """Xử lý dữ liệu từ API thành DataFrame cho nhiều ngày."""
+    """Xử lý dữ liệu từ API thành DataFrame cho nhiều ngày với nhiều thông tin chi tiết."""
     api_key = os.getenv("OPENWEATHER_API_KEY")
     if not api_key:
         print("Error: API Key not found in .env file!")
@@ -30,7 +30,9 @@ def process_weather_data(city):
             "date": [],
             "temperature": [],
             "humidity": [],
-            "precipitation": []
+            "precipitation": [],
+            "wind_speed": [],  # Thêm tốc độ gió
+            "pressure": []     # Thêm áp suất khí quyển
         }
 
         # Lặp qua dữ liệu dự báo 5 ngày (mỗi 3 giờ 1 lần)
@@ -39,6 +41,8 @@ def process_weather_data(city):
             weather_info["temperature"].append(entry["main"]["temp"])  # Nhiệt độ
             weather_info["humidity"].append(entry["main"]["humidity"])  # Độ ẩm
             weather_info["precipitation"].append(entry.get("rain", {}).get("3h", 0.0))  # Lượng mưa trong 3 giờ
+            weather_info["wind_speed"].append(entry["wind"]["speed"])  # Tốc độ gió
+            weather_info["pressure"].append(entry["main"]["pressure"])  # Áp suất khí quyển
 
         # Trả về DataFrame từ dữ liệu
         return pd.DataFrame(weather_info)
